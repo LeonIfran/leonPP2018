@@ -1,0 +1,4 @@
+menta - agua - 30 - 100
+menta - crema - 50 - 50
+Dulce de leche - crema - 70 - 550
+Frutilla - crema - 30 - 500
