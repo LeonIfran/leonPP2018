@@ -177,5 +177,5 @@ carpeta /ImagenesDeLaVenta.  */
 //Venta::guardarVenta($miVenta);
 //echo var_dump(Venta::TraerVentas());
 //echo var_dump(Venta::Busqueda("serg@you.com","crema"));
-Venta::Busqueda("serg@you.com","crema");
+//Venta::Busqueda("serg@you.com","crema");
 ?>

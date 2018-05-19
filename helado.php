@@ -192,7 +192,80 @@ para realizar los cambios en los datos de cualquier helado. La identificación d
 sabor y por el tipo. */ 
     public static function ModificarHelado($sab,$tip,$pre,$cant)
     {
+        //datos de la imagen
+        $imgRuta = "./ImagenesDeHelados/";
+        $imgExtension = pathinfo($_FILES["imgHelado"]["name"],PATHINFO_EXTENSION);
+        $imgNombre = $imgRuta.$sab."_".$tip.".".$imgExtension;
+
+        $arrHelados = Self::TraerHelados();
+
+        if (Self::Comprobar($sab,$tip) == "Si hay") 
+        {
+            echo "se encontro tipo y sabor<br>";
+            foreach ($arrHelados as $key => $value) 
+            {
+                if ($value->getSabor() == $sab && $value->getTipo() == $tip) 
+                {
+                    echo "Se encontro la entrada <br>";
+                    $arrHelados[$key] = new helado($sab,$tip,$pre,$cant);
+                    move_uploaded_file($_FILES["imgHelado"]["tmp_name"],$imgNombre);
+                    break;
+                }
+            }
+            Self::GuardarLista($arrHelados);
+        }
+    }
+
+    public static function BorrarHelado($sab,$tip)
+    {
+        $imgName = "$sab"."_"."$tip";
+        $img = NULL;
+        $ext= NULL;
         
+        $arrHelados = Helado::TraerHelados();
+
+        foreach ($arrHelados as $key => $value) 
+        {
+            if ($value->getSabor() == $sab && $value->getTipo() == $tip) 
+            {
+                echo "se entro a la condicion de borrado<br>";
+                unset($arrHelados[$key]);
+                //me va a traer el path de la imagen
+                $img = glob("./ImagenesDeHelados/$imgName.{jpeg,jpg,png,gif}",GLOB_BRACE);
+                //$ext = pathinfo($img[0]);
+                echo var_dump($img);
+                break;
+            }
+        }
+        if (!empty($img)) 
+        {
+            $ext = pathinfo($img[0],PATHINFO_EXTENSION);//traigo de la extension
+            $fecha = date("Ymd_His");
+            rename($img[0],"./backUpFotos/".$fecha.".".$ext);
+        }
+        Helado::GuardarLista($arrHelados);
+    }
+
+    public static function ListadoDeImagenes($opcion)
+    {
+        $arrImagenes = array();
+        if ($opcion==="cargadas") 
+        {
+            echo "<h1>Fotos Cargadas<h1>";
+            $arrImagenes = glob("./ImagenesDeHelados/*.{jpeg,jpg,png,gif}",GLOB_BRACE);
+        }
+        else if ($opcion==="borradas") 
+        {
+            echo "<h1>Fotos Borradas<h1>";
+            $arrImagenes = glob("./backUpFotos/*.{jpeg,jpg,png,gif}",GLOB_BRACE);
+        }
+
+        //echo var_dump($arrImagenes);
+        foreach ($arrImagenes as $key => $value) 
+        {
+            //echo $value;
+            echo "<img src='{$value}' width='100px' height='100px'><br>";
+        }
     }
     #endregion
 }
@@ -201,4 +274,5 @@ sabor y por el tipo. */
 //Helado::Guardar($mihelado);
 //echo var_dump(Helado::TraerHelados());
 //echo Helado::Comprobar("menta","crema");
+//Helado::ModificarHelado($_POST["sabor"],$_POST["tipo"],$_POST["precio"],$_POST["cantidad"]);
 ?>
